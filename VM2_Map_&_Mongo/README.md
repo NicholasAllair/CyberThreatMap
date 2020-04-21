@@ -25,5 +25,5 @@ or:
 
 echo -n "{ip: '160.89.237.99', bytecount: '55839', latitude: '33.824', longitude: '-6.0663', countryCode: 'MA', countryName: 'Morocco', city: 'Khemisset', region: 'Khemisset', date: '2020-04-20'}"|nc -4u -w1 127.0.0.1 514
 
-![img](map.png)
+![img](Map.png)
 
