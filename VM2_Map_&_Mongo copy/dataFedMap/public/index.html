@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<head>
+  <title>Threat Map</title>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="ThreatMap.css"/>
+  <link href="http://allfont.net/allfont.css?fonts=new_zelek" rel="stylesheet" type="text/css" />
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+  <script src="http://d3js.org/d3.geo.projection.v0.min.js"></script>
+  <script src="http://d3js.org/topojson.v1.min.js"></script>
+  <script src="http://datamaps.github.io/scripts/datamaps.world.min.js?v=1"></script>
+  <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="//cdn.jsdelivr.net/sockjs/1.0.0/sockjs.min.js"></script>
+  <script src="jquery.simplemodal-1.4.4.js"></script>
+  <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+  <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+  <script>
+    function about() {
+      $("#about").modal();
+    }
+  </script>
+</head>
+
+<body>
+  <h1 class ="mainHeading" align="center">Cyber Threat Intelligence</h1>
+        <h3 class ="displayCountHead">Cyber Attacks Today: </h3>
+        <h3 class ="displayCountNum" id = "todayAttackCount"></h3>
+        <br>
+
+        <center><div id="mapContainer"></div></center>
+
+        <footer>
+            <div class = "footer">
+                <div class = "first">
+                    <div class="header" onclick="TogglePanel(this, 'inside_topIps')">
+                        <p>Top IP's</p>
+                        <i class="fa fa-angle-down" aria-hidden="true"></i>
+                    </div>
+                    <div class="inside" id="inside_topIps" style="display: none;">
+                        <div id="topIp1"></div>
+                        <div id="topIp2"></div>
+                        <div id="topIp3"></div>
+                        <div id="topIp4"></div>
+                        <div id="topIp5"></div>
+                    </div>
+                </div>
+            </div>
+            <div class = "footer2">
+                <div class = "second">
+                    <div class="header" onclick="TogglePanel(this, 'inside_topLocations')">
+                        <p>Top Locations</p>
+                        <i class="fa fa-angle-down" aria-hidden="true"></i>
+                    </div>
+                    <div class="inside" id="inside_topLocations" style="display: none;">
+                        <div id="topCountry1"></div>
+                        <div id="topCountry2"></div>
+                        <div id="topCountry3"></div>
+                        <div id="topCountry4"></div>
+                        <div id="topCountry5"></div>
+
+                    </div>
+                </div>
+            </div>
+            <div class = "footer3">
+                <div class = "third">
+                    <div class="header" onclick="TogglePanel(this, 'inside_thirdPanel')">
+                        <p>Last Week's Attacks</p>
+                        <i class="fa fa-angle-down" aria-hidden="true"></i>
+                    </div>
+                    <div class="inside" id="inside_thirdPanel" style="display: none;">
+                        <div id="lastweekgraphdiv"></div>
+                    </div>
+                </div>
+            </div>
+            <div class = "footer4">
+                <div class = "fourth">
+                    <div class="header" onclick="TogglePanel(this, 'inside_currentAttacks')">
+                        <p>Current Attacks</p>
+                        <i class="fa fa-angle-down" aria-hidden="true"></i>
+                    </div>
+                    <div class="inside" id="inside_currentAttacks" style="display: none;">
+                        <div id="attackdiv"></div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+
+
+
+  <script>
+
+  //numAttacks = 0;
+
+	var ottawaLat = '45.4215';
+	var ottawaLong = '-75.6972';
+
+
+    // we maintain a fixed queue of "attacks" via this class
+    function FixedQueue( size, initialValues ){
+      initialValues = (initialValues || []);
+      var queue = Array.apply( null, initialValues );
+      queue.fixedSize = size;
+      queue.push = FixedQueue.push;
+      queue.splice = FixedQueue.splice;
+      queue.unshift = FixedQueue.unshift;
+      FixedQueue.trimTail.call( queue );
+      return( queue );
+    }
+
+    FixedQueue.trimHead = function(){
+      if (this.length <= this.fixedSize){ return; }
+      Array.prototype.splice.call( this, 0, (this.length - this.fixedSize) );
+    };
+
+    FixedQueue.trimTail = function(){
+      if (this.length <= this.fixedSize) { return; }
+      Array.prototype.splice.call( this, this.fixedSize, (this.length - this.fixedSize)
+      );
+    };
+
+    FixedQueue.wrapMethod = function( methodName, trimMethod ){
+      var wrapper = function(){
+        var method = Array.prototype[ methodName ];
+        var result = method.apply( this, arguments );
+        trimMethod.call( this );
+        return( result );
+      };
+      return( wrapper );
+    };
+
+    FixedQueue.push = FixedQueue.wrapMethod( "push", FixedQueue.trimHead );
+    FixedQueue.splice = FixedQueue.wrapMethod( "splice", FixedQueue.trimTail );
+    FixedQueue.unshift = FixedQueue.wrapMethod( "unshift", FixedQueue.trimTail );
+
+    var rand = function(min, max) {
+        return Math.random() * (max - min) + min;
+    };
+
+
+    // * update the Datamap
+
+     var map = new Datamap({
+
+            scope: 'world',
+            element: document.getElementById('mapContainer'),
+            projection: 'equirectangular',
+
+            fills: { defaultFill: 'rgba(0, 0, 0, ' + 0.01 + ')'},
+
+            geographyConfig: {
+              dataUrl: null,
+              hideAntarctica: true,
+              borderWidth: .19,
+              borderColor: '#1977CB',
+              popupTemplate: function(geography, data) {
+                return '<div class="hoverinfo" style="color:white;background:black">' +
+                       geography.properties.name + '</div>';
+              },
+              popupOnHover: true,
+              highlightOnHover: false,
+              highlightFillColor: 'black',
+              highlightBorderColor: 'rgba(250, 15, 160, 0.2)',
+              highlightBorderWidth: 2
+            },
+      })
+
+map.graticule();
+
+//shows 4 attacks on the map
+var hits = FixedQueue( 4, [  ] ); //Change the 4 to be a var from config
+var boom = FixedQueue( 4, [  ] );
+
+
+run = function() {
+  var socket = io();
+
+  //message with attack information
+  socket.on('message', function(data){
+    //console.log(data.message);
+    msg = data.message
+    var bytes = msg.bytecount
+		var iplatitude = msg.latitude
+		var iplongitude = msg.longitude
+		var countryname = msg.countryName
+		var cityName = msg.city
+		var regionName = msg.region
+    if (parseInt(bytes)>55000){
+        var arcCol = 'rgba(255, 0, 0, 0.4)'
+    } else if (bytes>35000){
+        var arcCol = 'rgba(255, 255, 0, 0.4)'
+    } else {
+        var arcCol = 'rgba(0, 255, 0, 0.4)'
+    }
+
+		var ipdestination = {origin: {latitude: +iplatitude, longitude: +iplongitude}, destination: {
+            latitude: +ottawaLat,
+            longitude: +ottawaLong }, options: {strokeWidth:4 , strokeColor: arcCol, greatArc: false, animationSpeed: 600}}
+
+         hits.push(ipdestination);
+
+         //numAttacks += 1;
+         //document.getElementById("todayAttackCount").innerHTML = numAttacks;
+
+         map.arc(hits);
+
+         // add boom to the bubbles queue
+
+         boom.push( { radius: 7, latitude: +iplatitude,
+                longitude: +iplongitude ,
+                      fillOpacity: 0.5, attk: 'countryname' });
+         map.bubbles(boom, {
+              popupTemplate: function(geo, msg) {
+                return '<div class="hoverinfo">' + countryname + " " + cityName + ", " + regionName + '</div>';
+              }
+          });
+
+	         // update the scrolling attack div
+           $('#attackdiv').append(countryname + " (" + cityName + "," + bytes + " bytes) " +
+
+                                  " <span style='color:steelblue'>(" + msg.ip + ")</span> " +
+                                  "<br/>");
+           $('#attackdiv').animate({scrollTop: $('#attackdiv').prop("scrollHeight")}, 500);
+  });
+
+  //message with query results for top countries
+  socket.on('updateCountries', function(data){
+    //console.log(data.updateCountries);
+    countries = data.updateCountries;
+    topCountry1 = countries[0]._id;
+    topCountry2 = countries[1]._id;
+    topCountry3 = countries[2]._id;
+    topCountry4 = countries[3]._id;
+    topCountry5 = countries[4]._id;
+
+    //update pannel
+    document.getElementById("topCountry1").innerHTML = topCountry1;
+    document.getElementById("topCountry2").innerHTML = topCountry2;
+    document.getElementById("topCountry3").innerHTML = topCountry3;
+    document.getElementById("topCountry4").innerHTML = topCountry4;
+    document.getElementById("topCountry5").innerHTML = topCountry5;
+  });
+
+  //message with query results for top countries
+  socket.on('updateIPs', function(data){
+    //console.log(data.updateIPs);
+    iPs = data.updateIPs;
+    topIp1 = "<span style='color:steelblue'>IP: </span>" + iPs[0]._id + "<span style='color:steelblue'> Count: </span>" + iPs[0].number ;
+    topIp2 = "<span style='color:steelblue'>IP: </span>" + iPs[1]._id + "<span style='color:steelblue'> Count: </span>" + iPs[1].number ;
+    topIp3 = "<span style='color:steelblue'>IP: </span>" + iPs[2]._id + "<span style='color:steelblue'> Count: </span>" + iPs[2].number ;
+    topIp4 = "<span style='color:steelblue'>IP: </span>" + iPs[3]._id + "<span style='color:steelblue'> Count: </span>" + iPs[3].number ;
+    topIp5 = "<span style='color:steelblue'>IP: </span>" + iPs[4]._id + "<span style='color:steelblue'> Count: </span>" + iPs[4].number ;
+
+    document.getElementById("topIp1").innerHTML = topIp1;
+    document.getElementById("topIp2").innerHTML = topIp2;
+    document.getElementById("topIp3").innerHTML = topIp3;
+    document.getElementById("topIp4").innerHTML = topIp4;
+    document.getElementById("topIp5").innerHTML = topIp5;
+  });
+
+  //message with total number of attacks today
+  socket.on('updateAttackCount', function(data){
+    //console.log(data.updateAttackCount)
+    attacks = data.updateAttackCount;
+    attackNum = attacks.attackCount;
+    document.getElementById("todayAttackCount").innerHTML = attackNum;
+  });
+
+  socket.on('lastWeekAttacks', async function(data){
+    //console.log(data.lastWeekAttacks)
+    attacks = data.lastWeekAttacks;
+    oneDayAgo = attacks[0].attackCount;
+    twoDayAgo = attacks[1].attackCount;
+    threeDayAgo = attacks[2].attackCount;
+    fourDayAgo = attacks[3].attackCount;
+    fiveDayAgo = attacks[4].attackCount;
+    sixDayAgo = attacks[5].attackCount;
+    sevenDayAgo = attacks[6].attackCount;
+
+    var chart = await new CanvasJS.Chart("lastweekgraphdiv", {
+      animationEnabled: false,
+      backgroundColor: "#000000",
+      theme: "light",
+      title:{
+        text: "Attacks Per Day"
+      },
+      axisY:{
+        includeZero: false
+      },
+        axisX:{
+           title: "Days Ago"
+         },
+      data: [{
+        type: "line",
+            indexLabelFontSize: 16,
+        dataPoints: [
+          { x: 1, y: oneDayAgo},
+          { x: 2, y: twoDayAgo },
+          { x: 3, y: threeDayAgo },
+          { x: 4, y: fourDayAgo },
+          { x: 5, y: fiveDayAgo },
+          { x: 6, y: sixDayAgo },
+          { x: 7, y: sevenDayAgo }
+        ]
+      }]
+    });
+    await chart.render();
+  });
+
+
+  //socket disconnect
+  socket.on('disconnect', function() {
+      socketConnectTimeInterval = setInterval(function () {
+        socket.socket.reconnect();
+        if(socket.socket.connected) {clearInterval(socketConnectTimeInterval);}
+      }, 3000);
+  });
+}
+
+
+run();
+
+d3.select(window).on('resize', function() { location.reload(); });
+
+
+
+
+//scripts for collapsable menus
+    function ShowModal(e) {
+      document.getElementById(e).style.display="block";
+     }
+
+    function HideModal(e) {
+      document.getElementById(e).style.display="none";
+    }
+
+    function TogglePanel(header, e){
+      var widthScreen = $(window).width();
+      header.getElementsByClassName("fa")[0].classList.toggle("fa-angle-up");
+      header.getElementsByClassName("fa")[0].classList.toggle("fa-angle-down");
+      if(widthScreen <= 750){
+          if (document.getElementById(e).style.display == "block"){
+              document.getElementById(e).style.display = "none";
+          } else {
+              document.getElementById(e).style.display = "block";
+          }
+      } else{
+          if (document.getElementById(e).style.display == "none"){
+              document.getElementById(e).style.display = "block";
+          } else {
+              document.getElementById(e).style.display = "none";
+          }
+      }
+    }
+
+    function ShowModalicon(e, x, y) {
+        document.getElementById(e).style.display="block";
+        document.getElementById(x).style.display="none";
+        document.getElementById(y).style.display="block";
+    }
+
+    function HideModalicon(e, x, y) {
+        document.getElementById(e).style.display="none";
+        document.getElementById(x).style.display="none";
+        document.getElementById(y).style.display="block";
+    }
+
+</script>
+
+</body>
+</html>
+

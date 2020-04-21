@@ -1,0 +1,208 @@
+body {
+  background: linear-gradient(0deg, rgba(0,0,0,1) 83%, rgba(11,11,129,1) 100%);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+  text-align: center;
+  font-family: 'Arial', arial;
+}
+
+#mapContainer {
+  position: center;
+  background-image: url('map.png');
+  width: 80vw;
+  height: 77vh;
+  max-width:100%;
+  max-height:100%;
+  background-repeat: no-repeat;
+  background-size: 100% 88.5%;
+  background-position: center bottom;
+
+}
+
+h1.mainHeading{
+  font-style: normal;
+  font-family: 'New_Zelek', arial;
+  color: white;
+  border: black;
+  filter:drop-shadow(8px 8px 10px gray);
+}
+
+h3.displayCountHead{
+  font-style: normal;
+  font-family: 'Arial', arial;
+  color: white;
+  border: black;
+  filter:drop-shadow(8px 8px 10px gray);
+}
+
+h3.displayCountNum{
+  font-style: normal;
+  font-family: 'Arial', arial;
+  color: red;
+  border: black;
+  filter:drop-shadow(8px 8px 10px gray);
+}
+
+h3.displayCountHead, h3.displayCountNum {
+  display: inline;
+}
+
+footer {
+    height: auto;
+    position: absolute;
+    bottom: 10px;
+    display: block;
+    width: 99%;
+    min-height: 55px;
+
+}
+
+@media (max-width: 750px)
+.footer, .footer2, .footer3, footer4 {
+    position: relative;
+    width: 100%;
+    height: auto;
+    display: block;
+    right: 0;
+    left: 0;
+}
+
+.footer .first {
+    width: 100%;
+    display: inline-block;
+    color: #fff;
+    background-color: black;
+    float: left;
+}
+
+.footer2 .second {
+    width: 100%;
+    display: inline-block;
+    color: #fff;
+    background-color: black;
+    float: left;
+}
+
+ .footer3 .third {
+    width: 100%;
+    display: inline-block;
+    color: #fff;
+    background-color: black;
+    float: left;
+}
+
+ .footer4 .fourth {
+    width: 100%;
+    display: inline-block;
+    color: #fff;
+    background-color: black;
+    float: left;
+}
+
+.first, .second, .third, .fourth {
+    border: 1px solid #3b424a;
+}
+
+.header {
+    font-family: "Courier New", Courier, monospace;
+    cursor: pointer;
+    background-color: #13161b;
+    padding-top: 1px;
+    padding-top: 1px;
+    padding-bottom:1px;
+    border-style: groove;
+    border-color: #152132;
+}
+
+
+.first .header, .second .header, .third .header, .fourth .header {
+    position: relative;
+
+}
+
+.footer {
+    position: absolute;
+    bottom: 5px;
+    width: 24%;
+    height: auto;
+    display: inline-block;
+    left:0.5%;
+
+}
+
+.footer2 {
+    position: absolute;
+    bottom: 5px;
+    width: 24%;
+    height: auto;
+    display: inline-block;
+    left:25.5%;
+}
+
+.footer3 {
+    position: absolute;
+    bottom: 5px;
+    width: 24%;
+    height: auto;
+    display: inline-block;
+    left: 50.5%;
+}
+
+.footer4 {
+    position: absolute;
+    bottom: 5px;
+    width: 24%;
+    height: auto;
+    display: inline-block;
+    left: 75.5%;
+}
+
+#attackdiv {
+        font-family: monospace;
+        font-size:10px;
+        width:100%;
+        height:150px;
+        color:white;
+        background-color:black;
+        padding:0px;
+        bottom:0px;
+        overflow-y: auto;
+        border-style: groove;
+        border-color: #152132;
+      }
+
+#lastweekgraphdiv {
+        width:100%;
+        height:155px;
+      }
+
+#about {display:none;}
+
+/* Overlay */
+#simplemodal-overlay {background-color:#000;}
+
+/* Container */
+#simplemodal-container {height:460px; width:600px; color:#bbb; background-color:#333; border:4px solid #444; padding:12px;}
+#simplemodal-container .simplemodal-data {padding:8px;}
+#simplemodal-container code {background:#141414; border-left:3px solid #65B43D; color:#bbb; display:block; font-size:12px; margin-bottom:12px; padding:4px 6px 6px;}
+#simplemodal-container a {color:#ddd;}
+#simplemodal-container a.modalCloseImg {background:url(../img/basic/x.png) no-repeat; width:25px; height:29px; display:inline; z-index:3200; position:absolute; top:-15px; right:-16px; cursor:pointer;}
+#simplemodal-container h3 {color:#84b8d9;}
+#simplemodal-container a.modalCloseImg {
+  background:url(x.png) no-repeat; /* adjust url as required */
+  width:25px;
+  height:29px;
+  display:inline;
+  z-index:3200;
+  position:absolute;
+  top:-15px;
+  right:-18px;
+  cursor:pointer;
+}
+
+
+
+
+
+
