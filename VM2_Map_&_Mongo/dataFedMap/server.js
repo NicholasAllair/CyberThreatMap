@@ -5,6 +5,8 @@ var io = require('socket.io')(http);
 var d3   = require('d3');
 var dgram  = require("dgram");
 var server = dgram.createSocket("udp4");
+const net = require('net');
+const fs = require('fs');
 var MongoClient = require('mongodb').MongoClient;
 var url = "mongodb://localhost:27017/";
 
@@ -167,7 +169,31 @@ function getMatches(string, regex, index) {
   return matches;
 }
 
+function send(emitMsg){
+  console.log(emitMsg);
+  io.emit('message', {'message': emitMsg, for: 'everyone'});
+
+  //Send message to MongoDBDB
+
+  MongoClient.connect(url, function(err, db) {
+    if (err) throw err;
+    var dbo = db.db("HonoursProjectThreatMap");
+    var col = dbo.collection('Threats');
+    var myobj = emitMsg;
+    col.insertOne(myobj, function(err, res) {
+    if (err) throw err;
+    console.log("1 document inserted");
+    db.close();
+    });
+  });
+
+  //update the map with info from the DB
+  updadePanels();
+  updateLastWeekGraph();
+}
+
 server.on("message", function incoming(rawMessage) {
+
 
   //decode incoming raw message to json
 
@@ -205,32 +231,72 @@ server.on("message", function incoming(rawMessage) {
 
   var emitMsg = {ip: ipEmit,bytecount: byteCountEmit,latitude: latitudeEmit,longitude: longitudeEmit,countryCode: countryCodeEmit,countryName: countryNameEmit,city: cityEmit,region: regionEmit,date: dateEmit}
 
-  console.log(emitMsg);
+  send(emitMsg);
+});
 
 
 
-  io.emit('message', {'message': emitMsg, for: 'everyone'});
+const socketPath = '/tmp/node-python-sock';
+// Callback for socket
+const handler = (socket) => {
 
-  //Send message to MongoDBDB
+  // Listen for data from client
+  socket.on('data', (rawMessage) => {
 
-  MongoClient.connect(url, function(err, db) {
-    if (err) throw err;
-    var dbo = db.db("HonoursProjectThreatMap");
-    var col = dbo.collection('Threats');
-    var myobj = emitMsg;
-    col.insertOne(myobj, function(err, res) {
-    if (err) throw err;
-    console.log("1 document inserted");
-    db.close();
-    });
+    //console.log(rawMessage);
+    // Decode byte string
+    var ipRegex = /(?<=ip:.)'(.*?)',/gm;
+    var byteCountRegex = /(?<=bytecount:.)'(.*?)',/gm;
+    var latitudeRegex = /(?<=latitude:.)'(.*?)',/gm;
+    var longitudeRegex = /(?<=longitude:.)'(.*?)',/gm;
+    var countryCodeRegex = /(?<=countryCode:.)'(.*?)',/gm;
+    var countryNameregex = /(?<=countryName:.)'(.*?)',/gm;
+    var cityRegex = /(?<=city:.)'(.*?)',/gm;
+    var regeionRegex = /(?<=region:.)'(.*?)',/gm;
+    var dateRegex = /(?<=date:.)'(.*?)'/gm;
+
+    var ipMatches = getMatches(rawMessage, ipRegex, 1);
+    var bytecountMatches = getMatches(rawMessage, byteCountRegex, 1);
+    var latitudeMatches = getMatches(rawMessage, latitudeRegex, 1);
+    var longitudeMatches = getMatches(rawMessage, longitudeRegex, 1);
+    var countryCodeMatches = getMatches(rawMessage, countryCodeRegex, 1);
+    var countryNameMatches = getMatches(rawMessage, countryNameregex, 1);
+    var cityMatches = getMatches(rawMessage, cityRegex, 1);
+    var regionMatches = getMatches(rawMessage, regeionRegex, 1);
+    var dateMatches = getMatches(rawMessage, dateRegex, 1 );
+
+    //console.log(dateMatches);
+
+    var ipEmit = String(ipMatches[0]);
+    var byteCountEmit = String(bytecountMatches[0]);
+    var latitudeEmit = String(latitudeMatches[0]);
+    var longitudeEmit = String(longitudeMatches[0]);
+    var countryCodeEmit = String(countryCodeMatches[0]);
+    var countryNameEmit = String(countryNameMatches[0]);
+    var cityEmit = String(cityMatches[0]);
+    var regionEmit = String(regionMatches[0]);
+    var dateEmit = String(dateMatches[0]);
+
+    var emitMsg = {ip: ipEmit,bytecount: byteCountEmit,latitude: latitudeEmit,longitude: longitudeEmit,countryCode: countryCodeEmit,countryName: countryNameEmit,city: cityEmit,region: regionEmit,date: dateEmit}
+
+    //console.log(emitMsg);
+    send(emitMsg);
+
+    // Let python know we want it to close
+    socket.write('end');
+    // Exit the process
+
+
   });
 
+};
 
-  //update the map with info from the DB
-  updadePanels();
-  updateLastWeekGraph();
-
-});
+// Remove an existing socket
+fs.unlink(
+  socketPath,
+  // Create the server, give it our callback handler and listen at the path
+  () => net.createServer(handler).listen(socketPath)
+);
 
 server.on("listening", function() {
     var address = server.address();

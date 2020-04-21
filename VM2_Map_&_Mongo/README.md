@@ -11,7 +11,7 @@ MongoDB setup required:
 
     With the database initailized, the server can run quries in order to update the map.
 
-    Import the Sample Data from SampleData.csv
+    Import the Sample Data from SampleData.csv in order to have existing data for the panels
 
 Start server using: node server.js
 
