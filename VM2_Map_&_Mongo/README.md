@@ -17,6 +17,10 @@ Start server using: node server.js
 
 Without the python2Map file (from VM#1, the application can be run using netcat)
 
+Using Your Browser Navigate too
+
+    http://localhost:3000
+
 try:
 
 echo -n "{ip: '129.220.205.77',bytecount: '55000',latitude: '37.751',longitude: '-97.822',countryCode: 'US',countryName: 'United States',city: '',region: '',date: '2020-04-20'}"|nc -4u -w1 127.0.0.1 514
