@@ -1,5 +1,7 @@
 # CyberThreatMap
 
+![img](Map.png)
+
 Preface:
 Network visualization is an ideal tool for communicating a large amount of data to a user, in a way which highlights the main concept of the data and its context. The best weapon in the battle against cyber attackers and potential online criminals is data. And while cybersecurity is a paramount concern amongst all organizations from enterprises to individuals, many existing tools for generating real time alerts lack a way to visualize this data. In some cases, the vast amount of data may seem uninterpretable. By visualizing the key-lines between communications, the network we are monitoring can be viewed on a map. With real time updates to the user interface, a data map can allow for easy filtering of incoming data. For example, showing only attacks which are perceived to have a large threat level. Understanding the location of incoming attacks, as-well as the time can help a user see patterns/trends in the data.
 
