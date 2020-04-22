@@ -177,3 +177,29 @@
 [2020-04-22T06:34:27.083+0500][gc,metaspace  ] GC(11) Metaspace: 44881K->44881K(1091584K)
 [2020-04-22T06:34:27.083+0500][gc            ] GC(11) Pause Young (G1 Evacuation Pause) 195M->148M(1024M) 9.976ms
 [2020-04-22T06:34:27.083+0500][gc,cpu        ] GC(11) User=0.02s Sys=0.01s Real=0.01s
+[2020-04-22T06:47:58.826+0500][gc,start      ] GC(12) Pause Young (G1 Evacuation Pause)
+[2020-04-22T06:47:58.826+0500][gc,task       ] GC(12) Using 4 workers of 4 for evacuation
+[2020-04-22T06:47:58.834+0500][gc,phases     ] GC(12)   Pre Evacuate Collection Set: 0.0ms
+[2020-04-22T06:47:58.834+0500][gc,phases     ] GC(12)   Evacuate Collection Set: 7.9ms
+[2020-04-22T06:47:58.834+0500][gc,phases     ] GC(12)   Post Evacuate Collection Set: 0.4ms
+[2020-04-22T06:47:58.834+0500][gc,phases     ] GC(12)   Other: 0.3ms
+[2020-04-22T06:47:58.834+0500][gc,heap       ] GC(12) Eden regions: 48->0(49)
+[2020-04-22T06:47:58.834+0500][gc,heap       ] GC(12) Survivor regions: 3->3(7)
+[2020-04-22T06:47:58.834+0500][gc,heap       ] GC(12) Old regions: 17->17
+[2020-04-22T06:47:58.834+0500][gc,heap       ] GC(12) Humongous regions: 129->129
+[2020-04-22T06:47:58.834+0500][gc,metaspace  ] GC(12) Metaspace: 45088K->45088K(1091584K)
+[2020-04-22T06:47:58.834+0500][gc            ] GC(12) Pause Young (G1 Evacuation Pause) 196M->148M(1024M) 8.765ms
+[2020-04-22T06:47:58.834+0500][gc,cpu        ] GC(12) User=0.03s Sys=0.01s Real=0.01s
+[2020-04-22T07:07:37.970+0500][gc,start      ] GC(13) Pause Young (G1 Evacuation Pause)
+[2020-04-22T07:07:37.970+0500][gc,task       ] GC(13) Using 4 workers of 4 for evacuation
+[2020-04-22T07:07:37.982+0500][gc,phases     ] GC(13)   Pre Evacuate Collection Set: 0.0ms
+[2020-04-22T07:07:37.982+0500][gc,phases     ] GC(13)   Evacuate Collection Set: 11.1ms
+[2020-04-22T07:07:37.982+0500][gc,phases     ] GC(13)   Post Evacuate Collection Set: 0.6ms
+[2020-04-22T07:07:37.982+0500][gc,phases     ] GC(13)   Other: 0.3ms
+[2020-04-22T07:07:37.982+0500][gc,heap       ] GC(13) Eden regions: 49->0(49)
+[2020-04-22T07:07:37.982+0500][gc,heap       ] GC(13) Survivor regions: 3->3(7)
+[2020-04-22T07:07:37.982+0500][gc,heap       ] GC(13) Old regions: 17->17
+[2020-04-22T07:07:37.982+0500][gc,heap       ] GC(13) Humongous regions: 129->129
+[2020-04-22T07:07:37.982+0500][gc,metaspace  ] GC(13) Metaspace: 45268K->45268K(1093632K)
+[2020-04-22T07:07:37.982+0500][gc            ] GC(13) Pause Young (G1 Evacuation Pause) 197M->148M(1024M) 12.266ms
+[2020-04-22T07:07:37.982+0500][gc,cpu        ] GC(13) User=0.04s Sys=0.00s Real=0.01s
