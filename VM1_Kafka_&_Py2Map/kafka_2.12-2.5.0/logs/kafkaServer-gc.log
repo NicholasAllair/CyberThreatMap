@@ -230,3 +230,16 @@
 [2020-04-22T07:57:05.174+0500][gc,metaspace  ] GC(15) Metaspace: 45272K->45272K(1093632K)
 [2020-04-22T07:57:05.174+0500][gc            ] GC(15) Pause Young (G1 Evacuation Pause) 197M->148M(1024M) 8.065ms
 [2020-04-22T07:57:05.174+0500][gc,cpu        ] GC(15) User=0.02s Sys=0.01s Real=0.01s
+[2020-04-22T08:18:09.167+0500][gc,start      ] GC(16) Pause Young (G1 Evacuation Pause)
+[2020-04-22T08:18:09.167+0500][gc,task       ] GC(16) Using 4 workers of 4 for evacuation
+[2020-04-22T08:18:09.176+0500][gc,phases     ] GC(16)   Pre Evacuate Collection Set: 0.0ms
+[2020-04-22T08:18:09.176+0500][gc,phases     ] GC(16)   Evacuate Collection Set: 8.4ms
+[2020-04-22T08:18:09.176+0500][gc,phases     ] GC(16)   Post Evacuate Collection Set: 0.4ms
+[2020-04-22T08:18:09.176+0500][gc,phases     ] GC(16)   Other: 0.2ms
+[2020-04-22T08:18:09.176+0500][gc,heap       ] GC(16) Eden regions: 52->0(81)
+[2020-04-22T08:18:09.176+0500][gc,heap       ] GC(16) Survivor regions: 4->4(7)
+[2020-04-22T08:18:09.176+0500][gc,heap       ] GC(16) Old regions: 17->17
+[2020-04-22T08:18:09.176+0500][gc,heap       ] GC(16) Humongous regions: 129->129
+[2020-04-22T08:18:09.176+0500][gc,metaspace  ] GC(16) Metaspace: 45295K->45295K(1093632K)
+[2020-04-22T08:18:09.176+0500][gc            ] GC(16) Pause Young (G1 Evacuation Pause) 200M->148M(1024M) 9.081ms
+[2020-04-22T08:18:09.176+0500][gc,cpu        ] GC(16) User=0.03s Sys=0.01s Real=0.01s
