@@ -7,8 +7,6 @@ Network visualization is an ideal tool for communicating a large amount of data 
 
 Map visualization can be particularly efficient at spotting DDoS (distributed denial of service) and DoS attacks, as the attacks are typically accomplished by flooding a targeted machine or server with an unmanageable amount of requests in order to disrupt the hosts connection to the internet. A analyst viewing the live data map would be able to identify the influx of messages from a single user, or group of users, in the case of a distributed attack
 
-![img](SysOverview.png)
-
 Machine One - Kafka & Py2Map
 
 In this implementation, machine one is tasked with handling the incoming stream of IP addresses, and generating the geolocation information to be stored, and used for display purposes. This python file uses the following libraries: socket, geoIp, CSV, JSON, time and date-time.
